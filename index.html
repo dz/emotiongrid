@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Emotion Grid</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  </head>
+  <body>
+    <h1>Emotions, mang</h1>
+    <div id="camera">
+      <video id="cam"></video>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="taken-images"></div>
+    <div id="final-image"></div>
+  </body>
+  <style type="text/css">
+  </style>
+  <script type="text/javascript">
+   (function($, window, undefined) {
+     $(function() {
+       var $cam = $('#cam');
+       var cam = $cam.get(0);
+       var streaming = false;
+
+       window.navigator.getMedia = (navigator.getUserMedia ||
+                             navigator.webkitGetUserMedia ||
+                             navigator.mozGetUserMedia ||
+                             navigator.msGetUserMedia);
+
+       window.navigator.getMedia({ video: true, audio: false}, function(stream) {
+         if (navigator.mozGetUserMedia) {
+           cam.mozSrcObject = stream;
+         } else {
+           var vendorURL = window.URL || window.webkitURL;
+           cam.src = vendorURL ? vendorURL.createObjectURL(stream) : stream;
+         }
+         cam.play();
+       }, function(err) { return; });
+
+       cam.addEventListener('canplay', function(ev){
+         if (!streaming) {
+           height = cam.videoHeight / (cam.videoWidth/width);
+           cam.setAttribute('width', width);
+           cam.setAttribute('height', height);
+           canvas.setAttribute('width', width);
+           canvas.setAttribute('height', height);
+           streaming = true;
+         }
+       }, false);
+     });
+   })(jQuery, window)
+  </script>
+</html>
